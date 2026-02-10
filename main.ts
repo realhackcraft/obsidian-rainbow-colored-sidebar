@@ -70,10 +70,16 @@ export default class RainbowColoredSidebar extends Plugin {
 	}
 
 	async setFolderStyling() {
-
 		// Get all folders from the root path, child folders are not needed here
+		// Then filter out invisible folders, and sort alphanumerically
 		const folders = (await this.app.vault.adapter.list('/')).folders
-			.filter((folder) => folder !== this.app.vault.configDir);
+			.filter((folder) =>
+				!folder.startsWith('.')
+			)
+			.sort((a, b) => a.localeCompare(b, undefined, {
+				numeric: true,
+				caseFirst: 'lower'
+			}));
 		if (folders) {
 			for (let i = 0; i < folders.length; i++) {
 				// Add rcs-item-x classes to all folders based on data-path with the numbering being 1-16 repeating indefinitely
